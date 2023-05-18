@@ -1,7 +1,7 @@
 import sqlite3
 from tkinter import *
 from tkinter import messagebox
-import dashboard
+import os
 
 root = Tk()
 root.title('Pulpa Shop - Sign in')
@@ -22,11 +22,23 @@ def signin():
 
             if result:
                 messagebox.showinfo("Success", 'Logged in Successfully,\n\nClick "OK" to continue.')
+                root.withdraw()
+                os.system("python dashboard.py")
                 root.destroy()
-                import dashboard
                 
             else : 
-                 messagebox.showerror("Failed", "Wrong Login details, please try again.")
+                messagebox.showerror("Failed", "Wrong Login details, please try again.")
+                
+
+"""# ========= DATABASE CONNECTION FOR FORGOT PASSWORD=====================
+def change_password():
+        db = sqlite3.connect("./Database/drinkShop.db")
+        cur = db.cursor()
+        insert = '''update user_account set guest_password=? where guest_username=? '''
+        cur.execute(insert, [new_password_entry.get(), confirm_password_entry.get(), ])
+        db.commit()
+        db.close()
+        messagebox.showinfo('Congrats', 'Password changed successfully')"""
 
 
 def forgot_password():

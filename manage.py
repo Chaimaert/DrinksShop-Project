@@ -1,17 +1,10 @@
 import sqlite3
-import re
-import random
-import string
 from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
-from time import strftime
-from datetime import date
 from tkinter import scrolledtext as tkst
 from PIL import ImageTk, Image
 import os
-import tempfile
-import dashboard
 
 
 class Manage:
@@ -52,7 +45,9 @@ class Manage:
             cur = db.cursor()
 
         # ************************************* HOME PAGE *************************************
+
         product_page.config(background='white')
+        
         # ************************************* BAR MENU *************************************
 
         menuBar_line = Canvas(product_page, width=2600, height=1.5, bg='#f20089', highlightthickness=0)
@@ -66,14 +61,15 @@ class Manage:
 
          # ************************************* HOME BUTTON **************************************************
 
+        def Home():
+            dashboard_window.withdraw()
+            os.system("python dashboard.py")
+            dashboard_window.destroy()
+
         home_button = Button(product_page, text='Home', bg='white', font=("", 13, "bold"), bd=0, fg='#000',
-                             cursor='hand2', activebackground='white', activeforeground='#f20089')
+                             cursor='hand2', activebackground='white', activeforeground='#f20089', command=Home)
         home_button.place(x=110, y=31)
 
-        """def manage():
-            dashboard_window.withdraw()
-            os.system("python Employee.py")
-            dashboard_window.destroy()"""
 
         # ************************************* MANAGE BUTTON *************************************
         manage_button = Button(product_page, text='Manage', bg='white', font=("", 13, "bold"), bd=0, fg='#f20089',
@@ -81,8 +77,14 @@ class Manage:
         manage_button.place(x=200, y=31)
 
         # ************************************* PURCHASE BUTTON *************************************
+
+        def Purchase():
+            dashboard_window.withdraw()
+            os.system("python purchase.py")
+            dashboard_window.destroy()
+
         manage_button = Button(dashboard_window, text='Purchase', bg='white', font=("", 13, "bold"), bd=0, fg='#000',
-                               cursor='hand2', activebackground='white', activeforeground='#f20089')
+                               cursor='hand2', activebackground='white', activeforeground='#f20089', command=Purchase)
         manage_button.place(x=300, y=31)
 
         #************************************* The logout button *************************************

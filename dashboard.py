@@ -1,5 +1,5 @@
 from tkinter import *
-from PIL import ImageTk, Image, ImageDraw
+from PIL import ImageTk, Image
 from tkinter import messagebox
 import os
 
@@ -65,6 +65,7 @@ class FirstPage:
         heading2.place(x=130, y=182)
 
         #************************************* The trending images *************************************
+
         drinkImage = Image.open('images/cliparttt.png')
         photo = ImageTk.PhotoImage(drinkImage)
         drinkImg = Label(homepage, image=photo, bg='white')
@@ -124,19 +125,22 @@ class FirstPage:
                              cursor='hand2', activebackground='white', activeforeground='#f20089')
         home_button.place(x=110, y=31)
 
-        """def manage():
-            dashboard_window.withdraw()
-            os.system("python Employee.py")
-            dashboard_window.destroy()"""
-
         # ************************************* MANAGE BUTTON *************************************
+        def Manage():
+            dashboard_window.withdraw()
+            os.system("python manage.py")
+            dashboard_window.destroy()
         manage_button = Button(homepage, text='Manage', bg='white', font=("Microsoft YaHei UI Light", 13, "bold"), bd=0, fg='#000',
-                               cursor='hand2', activebackground='white', activeforeground='#f20089')
+                               cursor='hand2', activebackground='white', activeforeground='#f20089', command=Manage)
         manage_button.place(x=200, y=31)
 
         # ************************************* PURCHASE BUTTON *************************************
+        def Purchase():
+            dashboard_window.withdraw()
+            os.system("python purchase.py")
+            dashboard_window.destroy()
         manage_button = Button(dashboard_window, text='Purchase', bg='white', font=("Microsoft YaHei UI Light", 13, "bold"), bd=0, fg='#000',
-                               cursor='hand2', activebackground='white', activeforeground='#f20089')
+                               cursor='hand2', activebackground='white', activeforeground='#f20089', command=Purchase)
         manage_button.place(x=300, y=31)
 
         #************************************* The logout button *************************************

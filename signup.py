@@ -1,6 +1,7 @@
+import sqlite3
+import os
 from tkinter import *
 from tkinter import messagebox
-import sqlite3
 
 window = Tk()
 window.title("InventoryManagement System - Sign Up")
@@ -27,7 +28,9 @@ def signin():
                     connection.commit()
                     connection.close()
                     messagebox.showinfo("Success", 'New account created successfully\n\nClick "OK" to continue')
-                    import dashboard
+                    window.withdraw()
+                    os.system("python dashboard.py")
+                    window.destroy()
 
     except Exception as ep:
                     messagebox.showerror('', ep)

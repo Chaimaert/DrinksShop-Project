@@ -38,9 +38,11 @@ class Manage:
             frame.tkraise()
 
         show_frame(product_page)
+
         # Declaration :
         self.cart = Cart()
-       
+        self.total=0
+
         #*********************************** DB CONNECTION ***************************************
 
         with sqlite3.connect("./Database/drinkShop.db") as db:
@@ -54,7 +56,7 @@ class Manage:
 
         menuBar_line = Canvas(product_page, width=2600, height=1.5, bg='#f20089', highlightthickness=0)
         menuBar_line.place(x=0, y=90)
-
+        
         home_bgImg = Image.open('images/pulpaa.png')
         photo = ImageTk.PhotoImage(home_bgImg)
         home_bg = Label(product_page, image=photo, bg='white')
@@ -67,20 +69,23 @@ class Manage:
                  self.dashboard_window.destroy()
 
          # ************************************* HOME BUTTON **************************************************
+        def Home():
+            dashboard_window.withdraw()
+            os.system("python dashboard.py")
+            dashboard_window.destroy()
 
         home_button = Button(product_page, text='Home', bg='white', font=("Microsoft YaHei UI Light", 13, "bold"), bd=0, fg='#000',
-                             cursor='hand2', activebackground='white', activeforeground='#f20089')
+                             cursor='hand2', activebackground='white', activeforeground='#f20089', command=Home)
         home_button.place(x=110, y=31)
 
-        """def manage():
-            self.dashboard_window.withdraw()
-            os.system("python Employee.py")
-            self.dashboard_window.destroy()"""
-
         # ************************************* MANAGE BUTTON *************************************
+        def Manage():
+            dashboard_window.withdraw()
+            os.system("python manage.py")
+            dashboard_window.destroy()
 
         manage_button = Button(product_page, text='Manage', bg='white', font=("Microsoft YaHei UI Light", 13, "bold"), bd=0, fg='black',
-                               cursor='hand2', activebackground='white', activeforeground='#f20089')
+                               cursor='hand2', activebackground='white', activeforeground='#f20089', command=Manage)
         manage_button.place(x=200, y=31)
 
         # ************************************* PURCHASE BUTTON *************************************
@@ -122,16 +127,7 @@ class Manage:
         self.button6.configure(command=exit2)
         self.button6.configure(activebackground='#eee', activeforeground='#f20089')
 
-        # ************************************************ Item Classe ***************************************************
-
-        btn_print = Button(self.dashboard_window, text="""Print""", command=lambda: print_area(self.Scrolledtext1.get('1.0', END)),
-                                overrelief="flat", bd=0, foreground="black", relief="flat", cursor="hand2",
-                                font="-family {Poppins SemiBold} -size 10", bg='#ff6c38', activebackground="#ff6c38")
-        btn_print.place(relx=0.600, rely=0.868, width=86, height=25)
-          
-        
-
-        # ************************************************ Cart Classe  ***************************************************
+        # **************************************************************************************************
 
         self.cust_name = StringVar()
         self.cust_num = StringVar()
@@ -207,14 +203,16 @@ class Manage:
         self.entry1.place(relx=0.035, rely=0.300, width=477, height=24)
         self.entry1.configure(font="-family {Poppins} -size 12")
         self.entry1.configure(textvariable=self.cust_name)
-        self.entry3 = Entry(self.dashboard_window, highlightthickness=2)
+
+        self.entry3 = Entry(self.dashboard_window, highlightthickness=2,)
         self.entry3.place(relx=0.420, rely=0.050, width=350, height=29)
         self.entry3.configure(font="-family {Poppins} -size 11")
         self.entry3.configure(relief="flat")
-        self.entry3.configure(highlightbackground="#6b6a69", highlightcolor="#fd6a36")
+        self.entry3.configure(highlightbackground="#6b6a69", highlightcolor="#f20089")
         self.entry3.configure(textvariable=self.cust_search_bill)
         self.search_txt = "Enter Bill Number to Search ..."
         self.entry3.insert(0, self.search_txt)
+        self.entry3.bind("<1>", self.clear_search)
 
         searchIcon = Image.open('images/search.png')
         photo = ImageTk.PhotoImage(searchIcon)
@@ -264,19 +262,6 @@ class Manage:
         self.button4.configure(text="""Generate""")
         self.button4.configure(activebackground='#ffb3c1', activeforeground='#f20089')
         self.button4.configure(command=self.gen_bill)
-
-        self.button5 = Button(self.dashboard_window)
-        self.button5.place(relx=0.270, rely=0.810, width=86, height=25)
-        self.button5.configure(relief="flat")
-        self.button5.configure(overrelief="flat")
-        self.button5.configure(activebackground="#fd6a36")
-        self.button5.configure(cursor="hand2")
-        self.button5.configure(foreground="black")
-        self.button5.configure(background="#ffb3c1")
-        self.button5.configure(font="-family {Poppins SemiBold} -size 10")
-        self.button5.configure(borderwidth="0")
-        self.button5.configure(text="""Print""")
-        self.button5.configure(command= lambda: print_area(self.Scrolledtext1.get('1.0', END)))
     
         self.button7 = Button(self.dashboard_window)
         self.button7.configure(text="""Add To Cart""")
@@ -361,19 +346,29 @@ class Manage:
         self.Scrolledtext1.configure(state="normal")
         head = "\n\n\t\t    PULPA    DRINKS    SHOP  \n" \
                 "\t\t          M2 Gueliz Marrakech   \n\n\t\t THANK YOU FOR CHOOSING US\n" \
-                "\t\t         Come back Soon \n\n\n" + "\tDRINK\t  -----  \tQUANTITY\t  -----  \tPRICE ( $ )\n"
+                "\t\t         Come back Soon \n\n\n" + "\tDRINK\t  -----  \tQUANTITY\t  -----  \tPRICE ( Dh )\n"
         self.Scrolledtext1.insert('insert', head)
         self.combo1.bind("<<ComboboxSelected>>", self.get_category)
 
-        def print_area(txt):
-            temp_file = tempfile.mktemp('.txt')
-            open(temp_file, 'w').write(txt)
-            os.startfile(temp_file, 'print')
 
-    def drinkItem(self, drink, price, qty): 
-        self.product_name = drink
-        self.price = price
-        self.qty = qty 
+        btn_print = Button(self.dashboard_window, text="""Print""", command=lambda: self.print_area(self.Scrolledtext1.get('1.0', END)),
+                                overrelief="flat", bd=0, foreground="black", relief="flat", cursor="hand2",
+                                font="-family {Poppins SemiBold} -size 10", bg='#ffb3c1', activebackground="#ff6c38")
+        btn_print.place(relx=0.272, rely=0.810, width=86, height=25)
+    
+    
+    def print_area(txt):
+         temp_file = tempfile.mktemp('.txt')
+         open(temp_file, 'w').write(txt)
+         os.startfile(temp_file, 'print')
+        # Optionally, remove the temporary file after printing
+        # os.remove(temp_file.name)
+
+
+   
+
+    def drinkItem(self, drink, price, qty):  
+        return {"price":price,"qty": qty,"product":drink}
 
     def get_category(self, event):
         try:
@@ -451,8 +446,8 @@ class Manage:
                     if product_qty.isdigit() == True:
                         if (stock - int(product_qty)) >= 0:
                             sp = mrp * int(product_qty)
-                            item = self.drinkItem(product_name, mrp, int(product_qty))
-                            self.cart.add_item(item)
+                            items = self.drinkItem(product_name, mrp, int(product_qty)) 
+                            self.cart.add_item(items)
                             self.Scrolledtext1.configure(state="normal")
                             divide = "\t" + ("-" * 70) + "\n"
                             self.Scrolledtext1.insert('insert', divide)
@@ -589,9 +584,9 @@ class Manage:
                         self.Scrolledtext1.configure(state="normal")
                         divider = "\n\n" + "\t" + ("-" * 70) + "\n"
                         self.Scrolledtext1.insert('insert', divider)
-                        total = "\tTotal\t\t\t$. {}\n".format(self.cart.total())
-                        self.Scrolledtext1.insert('insert', total)
-                        divider2 = "\t" + ("-" * 70) + "\n\n\tCashier : "
+                        self.total = "\tTotal\t\t\t$. {}\n".format(self.cart.total())
+                        self.Scrolledtext1.insert('insert',  self.total)
+                        divider2 = "\t" + ("-" * 70) + "\n\n\tCashier : "+self.cust_name.get()
                         self.Scrolledtext1.insert('insert', divider2)
                         self.Scrolledtext1.configure(state="normal")
                     else:
@@ -602,16 +597,22 @@ class Manage:
     def gen_bill(self):
          
         if self.state == 1:
+
             strr = self.Scrolledtext1.get('1.0', END)
             self.wel_bill()
+
             if(self.cust_name.get()==""):
                 messagebox.showerror("Oops!", "Please enter a name.", parent=self.dashboard_window)
+
             elif(self.cust_num.get()==""):
                 messagebox.showerror("Oops!", "Please enter a number.", parent=self.dashboard_window)
+
             elif self.valid_phone(self.cust_num.get())==False:
                   messagebox.showerror("Oops!", "Please enter a valid number.", parent=self.dashboard_window)
+
             elif(self.cart.isEmpty()):
                   messagebox.showerror("Oops!", "Cart is empty.", parent=self.dashboard_window)
+
             else:
                   if strr.find('Total')==-1:
                         self.total_bill()
@@ -685,7 +686,7 @@ class Manage:
                 self.state = 1
                 head = "\n\n\t\t    PULPA    DRINKS    SHOP  \n" \
                     "\t\t          M2 Gueliz Marrakech   \n\n\t\t THANK YOU FOR CHOOSING US\n" \
-                    "\t\t         Come back Soon \n\n\n" + "\tDRINK\t  -----  \tQUANTITY\t  -----  \tPRICE ( $ )\n"
+                    "\t\t         Come back Soon \n\n\n" + "\tDRINK\t  -----  \tQUANTITY\t  -----  \tPRICE ( Dh )\n"
                 self.Scrolledtext1.insert('insert', head)
 
     def clear_selection(self):
@@ -706,8 +707,7 @@ class Manage:
                     pass
 
     def clear_search(self, events):
-                
-                self.entry3.delete(0, "end")
+        self.entry3.delete(0, "end")
 
     def search_bill(self):
                 
@@ -715,6 +715,7 @@ class Manage:
                 self.cur.execute(find_bill, [self.cust_search_bill.get().rstrip()])
                 results = self.cur.fetchall()
                 if results:
+
                     self.wel_bill()
                     self.name_message.insert(END, results[0][2])
                     self.name_message.configure(state="disabled")
@@ -746,6 +747,7 @@ class Cart:
 
     def add_item(self, item):
         self.items.append(item)
+        
 
     def remove_item(self):
         self.items.pop()
@@ -755,8 +757,10 @@ class Cart:
 
     def total(self):
         total = 0.0
+        print(self.items)
         for i in self.items:
-            total += i.price * i.qty
+            total+=i["price"]*i["qty"]
+            print(total)
         return total
 
     def isEmpty(self):
